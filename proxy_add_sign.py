@@ -68,8 +68,6 @@ class ProxyHandler(tornado.web.RequestHandler):
         logger.debug('Handle %s request to %s', self.request.method, self.request.uri)
         logger.debug('Handle %s %s %s %s',self.request.uri, self.request.method, self.request.body,self.request.headers)
 
-        # http://www.guimaizi.com:443/ GET  {'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'Accept':
-#'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0', 'Host': 'www.guimaizi.com:443', 'Cookie': 'UM_distinctid=167b17756ad7b-0d61507f3852b48-4c312a7a-1fa400-167b17756ae1de; CNZZDATA1262779369=495412619-1544870736-%7C1560095020', 'Upgrade-Insecure-Requests': '1'}
         def handle_response(response):
             #self.request.headers.get("X-Real-Ip",'')
             if (response.error and not
