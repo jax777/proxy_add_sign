@@ -43,7 +43,7 @@ def upadte_post_body(body):
     for i in paramlist:
         _ = i.split('=')
         if _[0] != 'md5str' and _[0] != 'signature':
-            new_md5str = new_md5str + i
+            new_md5str = new_md5str + _[0] + _[1]
         elif _[0] == 'md5str':
             old_md5str = _[1]
         elif _[0] == 'signature':
@@ -54,9 +54,10 @@ def upadte_post_body(body):
     md5.update(hashstring.encode('utf-8'))   
     new_sign = md5.hexdigest()
 
-    body.replace(old_sign,new_sign)
-    body.replace(old_md5str,new_md5str)
+    body = body.replace(old_sign,new_sign)
+    body = body.replace(old_md5str,new_md5str)
 
+    logger.debug('new_sign %s new_md5str %s',new_sign, new_md5str)
     return body
 
 class ProxyHandler(tornado.web.RequestHandler):
@@ -102,15 +103,20 @@ class ProxyHandler(tornado.web.RequestHandler):
 
 
         body = self.request.body
+        url = self.request.uri
+        if 'http' != url[:4]:
+            url = 'http://' + self.request.headers['Host'] + url
+
         
         # modify here  ----------------------
-        upadte_post_body(body)
+        body = upadte_post_body(body)
+        logger.debug('post data %s',body)
 
         if not body:
             body = None
         try:
             fetch_request(
-                self.request.uri, handle_response,
+                url, handle_response,
                 method=self.request.method, body=body,
                 headers=self.request.headers, follow_redirects=False,
                 allow_nonstandard_methods=True)
